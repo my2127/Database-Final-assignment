@@ -1,0 +1,80 @@
+erDiagram
+    users ||--o{ user_inventory : "所有する"}
+    users ||--o{ cooking_history : "調理する"}
+    users ||--o{ favorite_recipes : "お気に入り"}
+    
+    ingredients_master ||--o{ user_inventory : "参照される"}
+    ingredients_master ||--o{ recipe_ingredients : "使用される"}
+    
+    recipes ||--o{ recipe_ingredients : "含む"}
+    recipes ||--o{ cooking_history : "記録される"}
+    recipes ||--o{ favorite_recipes : "登録される"}
+    
+    user_inventory ||--o{ cooking_history : "消費される"
+
+    users {
+        int user_id PK "主キー"
+        varchar username UK "一意制約"
+        varchar email UK "一意制約、NOT NULL"
+        varchar password_hash "NOT NULL"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "ON UPDATE"
+    }
+    
+    ingredients_master {
+        int ingredient_id PK "主キー"
+        varchar ingredient_name "NOT NULL、INDEX"
+        varchar category "NOT NULL"
+        varchar unit "NOT NULL"
+        int avg_shelf_life "CHECK >= 0"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    
+    user_inventory {
+        int inventory_id PK "主キー"
+        int user_id FK "外部キー → users"
+        int ingredient_id FK "外部キー → ingredients_master"
+        decimal quantity "NOT NULL、CHECK > 0"
+        date purchase_date
+        date expiry_date "NOT NULL、CHECK >= purchase_date"
+        boolean is_consumed "DEFAULT FALSE"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        timestamp updated_at "ON UPDATE"
+    }
+    
+    recipes {
+        int recipe_id PK "主キー"
+        varchar recipe_name "NOT NULL、INDEX"
+        text recipe_url
+        int cooking_time "CHECK > 0"
+        varchar difficulty "CHECK IN (簡単,普通,難しい)"
+        varchar external_api_id "UNIQUE"
+        text instructions
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    
+    recipe_ingredients {
+        int recipe_ingredient_id PK "主キー"
+        int recipe_id FK "外部キー → recipes"
+        int ingredient_id FK "外部キー → ingredients_master"
+        decimal required_quantity "CHECK >= 0"
+        varchar unit "NOT NULL"
+    }
+    
+    cooking_history {
+        int history_id PK "主キー"
+        int user_id FK "外部キー → users"
+        int recipe_id FK "外部キー → recipes"
+        date cooked_date "NOT NULL、DEFAULT CURRENT_DATE"
+        int rating "CHECK BETWEEN 1 AND 5"
+        text notes
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    
+    favorite_recipes {
+        int favorite_id PK "主キー"
+        int user_id FK "外部キー → users"
+        int recipe_id FK "外部キー → recipes"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+}
