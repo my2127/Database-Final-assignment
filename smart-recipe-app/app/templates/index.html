@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>スマート在庫・レシピ管理アプリ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        h1 { color: #333; text-align: center; }
+        form { margin-bottom: 20px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        label { display: inline-block; margin-right: 10px; }
+        input, select { margin-right: 20px; padding: 5px; }
+        button { padding: 5px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .expired { background-color: #ffdddd; }
+        .warning { background-color: #fff4e5; }
+        .category-tag { padding: 2px 8px; border-radius: 4px; color: #000; }
+        a { color: #d9534f; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>スマート在庫・レシピ管理アプリ</h1>
+
+    <h2>食材を追加</h2>
+    <form method="post" action="/add">
+        <label for="name">食材名:</label>
+        <input type="text" name="name" id="name" required>
+        <label for="category_add">カテゴリー:</label>
+        <select name="category" id="category_add" required>
+            {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+            {% endfor %}
+        </select>
+        <label for="quantity">分量:</label>
+        <input type="text" name="quantity" id="quantity" required>
+        <label for="expiry_date">賞味期限:</label>
+        <input type="date" name="expiry_date" id="expiry_date" required>
+        <button type="submit">追加</button>
+    </form>
+
+    <h2>在庫検索</h2>
+     <form method="get">
+        <label for="search">食材名検索:</label>
+        <input type="text" name="search" value="{{ search }}" id="search">
+        <label for="category">カテゴリー絞り込み:</label>
+        <select name="category" id="category">
+            <option value="">すべて</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">検索</button>
+    </form>
+
+    <h2>在庫一覧</h2>
+    <table>
+        <tr>
+            <th>食材名</th>
+            <th>カテゴリー</th>
+            <th>分量</th>
+            <th>賞味期限</th>
+            <th>あと X 日</th>
+            <th>削除</th>
+        </tr>
+        {% for ing in ingredients %}
+        <tr class="{% if ing.remaining_days < 0 %}expired{% elif ing.remaining_days <= 3 %}warning{% endif %}">
+            <td>{{ ing.name }}</td>
+            <td><span class="category-tag" style="background-color: {{ category_colors[ing.category] }}">{{ ing.category }}</span></td>
+            <td>{{ ing.quantity }}</td>
+            <td>{{ ing.expiry_date }}</td>
+            <td>{% if ing.remaining_days < 0 %}期限切れ{% else %}あと {{ ing.remaining_days }} 日{% endif %}</td>
+            <td><a href="/delete/{{ ing.id }}">削除</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
