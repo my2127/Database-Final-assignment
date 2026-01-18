@@ -67,6 +67,8 @@
    cd smart-recipe-app/infra
 
    コンテナをビルド・起動します。
-3.コンテナをビルド・起動します。
-  ```bash
-  docker-compose up --build -d
+3. `infra` ディレクトリへ移動します。
+   ```bash
+   docker-compose up --build -d
+4. ブラウザで以下のURLにアクセスします。
+   http://localhost:8080
