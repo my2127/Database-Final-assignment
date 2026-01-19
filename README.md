@@ -68,7 +68,8 @@
    docker-compose up --build -d
 4. ブラウザで以下のURLにアクセスします。
    http://localhost:8080
-5.実際のアプリ動作動画   
+
+## 6. 実際のアプリ動作動画   
 
 https://github.com/user-attachments/assets/4ac69350-c7b5-4f23-bb36-cdc10a6f081c
 
