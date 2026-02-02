@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.title }} - 蔵メイト</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ recipe.title }}</h1>
+        <h3> 材料</h3>
+        <ul>
+            {% for ri in recipe.recipe_ingredients %}
+            <li>{{ ri.category_name }}: {{ ri.quantity }}</li>
+            {% endfor %}
+        </ul>
+        <h3>📝 作り方</h3>
+        <p>{{ recipe.instructions | replace('\n', '<br>') | safe }}</p>
+        <hr>
+        <a href="/recipes">← レシピ一覧に戻る</a>
+    </div>
+</body>
+</html>

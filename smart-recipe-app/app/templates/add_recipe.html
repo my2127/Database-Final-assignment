@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レシピ追加 - 蔵メイト</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2d5a3d;
+            --primary-light: #4a7c59;
+            --primary-dark: #1a3d29;
+            --accent-color: #ff6b35;
+            --accent-light: #ff8c5a;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8faf9;
+            --bg-tertiary: #f1f5f2;
+            --border-color: #e5e9e6;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .app {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 24px 0;
+        }
+
+        .header h1 {
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        /* Navigation */
+        .nav {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Form */
+        .recipe-form {
+            background: var(--bg-primary);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--bg-primary);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--bg-primary);
+            transition: var(--transition);
+            font-family: inherit;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+        }
+
+        /* Ingredients Section */
+        .ingredients-section {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            background: var(--bg-tertiary);
+        }
+
+        .ingredients-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ingredient-row {
+            display: grid;
+            grid-template-columns: 1fr 120px 80px;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .ingredient-select {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--bg-primary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .ingredient-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+        }
+
+        .ingredient-quantity {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            background: var(--bg-primary);
+            transition: var(--transition);
+        }
+
+        .ingredient-quantity:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.1);
+        }
+
+        .remove-ingredient {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-ingredient:hover {
+            background: #fecaca;
+        }
+
+        .add-ingredient-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+            font-weight: 500;
+            margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-ingredient-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app {
+                padding: 12px;
+            }
+
+            .recipe-form {
+                padding: 24px;
+            }
+
+            .ingredient-row {
+                grid-template-columns: 1fr 80px 60px;
+                gap: 8px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <h1>蔵メイト</h1>
+            <p>スマート在庫・レシピ管理システム</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-links">
+                <a href="/" class="nav-link">📦 在庫管理</a>
+                <a href="/recipes" class="nav-link active">👨‍🍳 レシピ管理</a>
+            </div>
+        </nav>
+
+        <!-- Recipe Form -->
+        <form class="recipe-form" method="post" action="/recipes/add" id="recipeForm">
+            <!-- Basic Info -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    📝 基本情報
+                </h2>
+
+                <div class="form-group">
+                    <label class="form-label" for="title">レシピ名</label>
+                    <input type="text" id="title" name="title" class="form-input" required
+                           placeholder="例: 親子丼、肉じゃが、カルボナーラ...">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="instructions">作り方</label>
+                    <textarea id="instructions" name="instructions" class="form-textarea" required
+                              placeholder="作り方の手順を詳しく書いてください&#10;&#10;例:&#10;1. 材料を切る&#10;2. 炒める&#10;3. 味付けする&#10;4. 完成"></textarea>
+                </div>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    🥘 必要な材料
+                </h2>
+
+                <div class="ingredients-section">
+                    <div class="ingredients-header">
+                        <div style="font-size: 14px; color: var(--text-secondary);">
+                            使用する食材カテゴリを選択してください
+                        </div>
+                    </div>
+
+                    <div id="ingredientsList" class="ingredients-list">
+                        <!-- Dynamic ingredient rows will be added here -->
+                        <div class="ingredient-row">
+                            <select name="category_ids[]" class="ingredient-select" required>
+                                <option value="">食材カテゴリを選択...</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="text" name="quantities[]" class="ingredient-quantity"
+                                   placeholder="分量" required>
+                            <button type="button" class="remove-ingredient" onclick="removeIngredient(this)">×</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="add-ingredient-btn" onclick="addIngredient()">
+                        <span>+</span>
+                        材料を追加
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="/recipes" class="btn btn-secondary">キャンセル</a>
+                <button type="submit" class="btn btn-primary">
+                    <span>💾</span>
+                    レシピを保存
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Template for new ingredient row
+        const ingredientTemplate = `
+            <div class="ingredient-row">
+                <select name="category_ids[]" class="ingredient-select" required>
+                    <option value="">食材カテゴリを選択...</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="quantities[]" class="ingredient-quantity"
+                       placeholder="分量" required>
+                <button type="button" class="remove-ingredient" onclick="removeIngredient(this)">×</button>
+            </div>
+        `;
+
+        function addIngredient() {
+            const ingredientsList = document.getElementById('ingredientsList');
+            ingredientsList.insertAdjacentHTML('beforeend', ingredientTemplate);
+        }
+
+        function removeIngredient(button) {
+            const ingredientRows = document.querySelectorAll('.ingredient-row');
+
+            // Keep at least one ingredient row
+            if (ingredientRows.length > 1) {
+                button.closest('.ingredient-row').remove();
+            } else {
+                alert('少なくとも1つの材料が必要です。');
+            }
+        }
+
+        // Form validation
+        document.getElementById('recipeForm').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const instructions = document.getElementById('instructions').value.trim();
+            const categories = document.querySelectorAll('select[name="category_ids[]"]');
+            const quantities = document.querySelectorAll('input[name="quantities[]"]');
+
+            if (!title) {
+                alert('レシピ名を入力してください。');
+                e.preventDefault();
+                return;
+            }
+
+            if (!instructions) {
+                alert('作り方を入力してください。');
+                e.preventDefault();
+                return;
+            }
+
+            // Check if at least one ingredient is properly filled
+            let hasValidIngredient = false;
+            for (let i = 0; i < categories.length; i++) {
+                if (categories[i].value && quantities[i].value.trim()) {
+                    hasValidIngredient = true;
+                    break;
+                }
+            }
+
+            if (!hasValidIngredient) {
+                alert('少なくとも1つの材料を指定してください。');
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
