@@ -71,6 +71,7 @@
 
 ## 6. 実際のアプリ動作動画   
 
-https://github.com/user-attachments/assets/4ac69350-c7b5-4f23-bb36-cdc10a6f081c
+https://github.com/user-attachments/assets/9a52851e-1fe6-484d-8c3d-5c5ca62f9e95
+
 
 
