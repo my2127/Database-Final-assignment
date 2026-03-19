@@ -72,4 +72,5 @@
 ## 6. 実際のアプリ動作動画   
 
 https://github.com/user-attachments/assets/4ac69350-c7b5-4f23-bb36-cdc10a6f081c
+https://github.com/my2127/Database-Final-assignment/blob/main/%E7%94%BB%E9%9D%A2%E9%81%B7%E7%A7%BB%E6%9C%80%E6%96%B0.mov
 
